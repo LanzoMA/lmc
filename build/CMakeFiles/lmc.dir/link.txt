@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/lmc.dir/src/main.cpp.o CMakeFiles/lmc.dir/src/lmc.cpp.o -o lmc 

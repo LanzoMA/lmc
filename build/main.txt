@@ -1,0 +1,17 @@
+# Take two inputs and store them.
+INP
+STA num1
+INP
+STA num2
+
+# Load 1st input to add to the second input.
+LDA num1
+ADD num2
+
+# Output the result.
+OUT
+HLT
+
+# Create data locations.
+num1 DAT
+num2 DAT
