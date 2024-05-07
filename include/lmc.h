@@ -9,7 +9,7 @@
 class LMC
 {
 public:
-	LMC(char* fn);
+	LMC(const char* filename);
 	~LMC();
 
 	// Main methods
@@ -21,7 +21,13 @@ public:
 	void clearRAM();
 	void outputRAM();
 
+    void setShowRamOutput(bool value);
+    void setShowInstruction(bool value);
+
 private:
+    bool showRamOutput = false;
+    bool showInstruction = false;
+
 	int PC = -1;
 	int CIR = 999;
 	int ACC = 0;
@@ -47,7 +53,7 @@ private:
 	std::vector<std::string> label_wait;
 	std::vector<int> value_wait;
 
-	char* filename = "";
+	const char* filename = "";
 	std::ifstream file_manager;
 
 	int data_ptr = 99;

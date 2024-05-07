@@ -3,9 +3,7 @@
 #include <algorithm>
 #include <sstream>
 
-LMC::LMC(char* fn)
-{
-	filename = fn;
+LMC::LMC(const char* filename) : filename(filename) {
 	file_manager.open(filename);
 
 	if (!file_manager.is_open()) {
@@ -13,10 +11,7 @@ LMC::LMC(char* fn)
 	}
 }
 
-LMC::~LMC()
-{
-	std::cout << "LMC has been deleted...\n\n";
-}
+LMC::~LMC() { }
 
 void LMC::assembleIntoRAM()
 {
@@ -24,8 +19,7 @@ void LMC::assembleIntoRAM()
 
 	std::string line, arg1, arg2 ,arg3;
 
-	while (file_manager)
-	{
+	while (file_manager) {
 		arg1 = ""; arg2 = ""; arg3 = "";
 
 		std::getline(file_manager, line, '\n');
@@ -51,11 +45,11 @@ void LMC::assembleIntoRAM()
 	}
 
 	clearWaitingList();
+    if (showRamOutput) outputRAM();
 }
 
 // Assembles one line of LMC code to RAM.
-void LMC::translateKeywords(std::string label, std::string opcode, std::string operand)
-{
+void LMC::translateKeywords(std::string label, std::string opcode, std::string operand) {
 	if (opcode.compare("DAT") == 0) {
 		if (operand.compare("") != 0) {
 			RAM[data_ptr] = stoi(operand);
@@ -72,8 +66,7 @@ void LMC::translateKeywords(std::string label, std::string opcode, std::string o
 	}
 
 	// Checks if there is a label in the label column;
-	else if (label.compare("") != 0)
-	{
+	else if (label.compare("") != 0) {
 		label_lookup.insert({ label, PC });
 	}
 
@@ -130,11 +123,9 @@ void LMC::translateKeywords(std::string label, std::string opcode, std::string o
 }
 
 // Converts arguments into labels, opcodes and operands.
-void LMC::update(std::string arg1, std::string arg2 = "", std::string arg3 = "")
-{
+void LMC::update(std::string arg1, std::string arg2 = "", std::string arg3 = "") {
 	// If arg1 has the opcode, arg2 may contain an operand or nothing.
-	if (containsOpcode(arg1))
-	{
+	if (containsOpcode(arg1)) {
 		// Opcode
 		if (arg2.compare("") == 0) {
 			translateKeywords("", arg1, "");
@@ -147,8 +138,7 @@ void LMC::update(std::string arg1, std::string arg2 = "", std::string arg3 = "")
 	}
 
 	// If arg2 has the opcode, arg1 is the label and arg3 may contain an operand or nothing.
-	else if (containsOpcode(arg2))
-	{
+	else if (containsOpcode(arg2)) {
 		// Label + Opcode
 		if (arg3.compare("") == 0) {
 			translateKeywords(arg1, arg2, "");
@@ -163,35 +153,40 @@ void LMC::update(std::string arg1, std::string arg2 = "", std::string arg3 = "")
 
 void LMC::execute()
 {
-	std::cout << "Executing program ...\n";
+	std::cout << "Executing program ...\n\n";
 
 	resetPC();
 
-	while (running)
-	{
-		std::cout << "\n";
-
+	while (running) {
 		// If there was a branch instruction, do not increment the PC.
 		if (!branched) incrementPC();
 		else branched = false;
 			
 		CIR = RAM[PC];
-		std::cout << "PC: " << PC + 1 << " CIR: " << CIR << " ACC: " << ACC << " Instruction: ";
 
-		switch (CIR)
-		{
+        if (showRamOutput) outputRAM();
+		if (showInstruction) 
+        std::cout << "PC: " << PC + 1 
+                  << " CIR: " << CIR 
+                  << " ACC: " << ACC 
+                  << " Instruction: ";
+
+		switch (CIR) {
 		case 901:
+		if (showInstruction) 
 			std::cout << "INP\n";
 			std::cout << "Input: ";
 			std::cin >> ACC;
 			continue;
 
 		case 902:
+		if (showInstruction) 
 			std::cout << "OUT\n";
 			std::cout << "Output: " << ACC << "\n";
 			continue;
 
 		case 0:
+		if (showInstruction) 
 			std::cout << "HLT\n";
 			running = false;
 			continue;
@@ -199,6 +194,7 @@ void LMC::execute()
 
 		if (CIR >= BRP)
 		{
+		if (showInstruction) 
 			std::cout << "BRP\n";
 
 			if (ACC >= 0) {
@@ -211,6 +207,7 @@ void LMC::execute()
 
 		if (CIR >= BRZ)
 		{
+		if (showInstruction) 
 			std::cout << "BRZ\n";
 
 			if (ACC == 0) {
@@ -223,6 +220,7 @@ void LMC::execute()
 
 		if (CIR >= BRA)
 		{
+		if (showInstruction) 
 			std::cout << "BRA\n";
 			PC = CIR - BRA;
 			branched = true;
@@ -231,6 +229,7 @@ void LMC::execute()
 
 		if (CIR >= LDA)
 		{
+		if (showInstruction) 
 			std::cout << "LDA\n";
 
 			ACC = RAM[CIR - LDA];
@@ -239,6 +238,7 @@ void LMC::execute()
 
 		if (CIR >= STA)
 		{
+		if (showInstruction) 
 			std::cout << "STA\n";
 
 			RAM[CIR - STA] = ACC;
@@ -247,6 +247,7 @@ void LMC::execute()
 
 		if (CIR >= SUB)
 		{
+		if (showInstruction) 
 			std::cout << "SUB\n";
 			ACC -= RAM[CIR - SUB];
 			continue;
@@ -254,22 +255,21 @@ void LMC::execute()
 
 		if (CIR >= ADD)
 		{
-			std::cout << "ADD\n";
+		    if (showInstruction) std::cout << "ADD\n";
 			ACC += RAM[CIR - ADD];
 		}
 	}
-
-	std::cout << "\n";
 }
 
 void LMC::resetPC() { PC = -1; }
 void LMC::incrementPC() { PC++; }
 
-void LMC::clearRAM() { RAM = {};}
+void LMC::clearRAM() { RAM = {}; }
 
-void LMC::outputRAM()
-{
+void LMC::outputRAM() {
 	const int MAX_DISPLAYED = 32;
+
+    std::cout << "RAM:\n";
 
 	for (int i = 0; i < RAM_size; i++) {
 		if (i % MAX_DISPLAYED != MAX_DISPLAYED - 1) {
@@ -283,12 +283,9 @@ void LMC::outputRAM()
 	std::cout << "\n\n";
 }
 
-bool LMC::containsOpcode(std::string opcode_query)
-{
-	for (int i = 0; i < 11; i++)
-	{
-		if (opcode_query.compare(opcodes[i]) == 0)
-		{
+bool LMC::containsOpcode(std::string opcode_query) {
+	for (int i = 0; i < 11; i++) {
+		if (opcode_query.compare(opcodes[i]) == 0) {
 			return true;
 		}
 	}
@@ -297,10 +294,8 @@ bool LMC::containsOpcode(std::string opcode_query)
 }
 
 // Find where the label points to.
-int LMC::getBranchAddress(std::string label_query)
-{
-	if (label_lookup.find(label_query) != label_lookup.end())
-	{
+int LMC::getBranchAddress(std::string label_query) {
+	if (label_lookup.find(label_query) != label_lookup.end()) {
 		int address = label_lookup.at(label_query);
 		return address;
 	}
@@ -311,10 +306,16 @@ int LMC::getBranchAddress(std::string label_query)
 }
 
 // Ensure labels are converted to locations in memory.
-void LMC::clearWaitingList()
-{
+void LMC::clearWaitingList() {
 	for (int i = 0; i < label_wait.size(); i++) {
 		RAM[value_wait[i]] += label_lookup[label_wait[i]];
 	}
 }
 
+void LMC::setShowRamOutput(bool value) {
+    showRamOutput = value;
+}
+
+void LMC::setShowInstruction(bool value) {
+    showInstruction = value;
+}
