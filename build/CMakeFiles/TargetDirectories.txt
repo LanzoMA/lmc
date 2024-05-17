@@ -1,3 +1,0 @@
-/home/lanzo/repos/lmc/build/CMakeFiles/lmc.dir
-/home/lanzo/repos/lmc/build/CMakeFiles/edit_cache.dir
-/home/lanzo/repos/lmc/build/CMakeFiles/rebuild_cache.dir
