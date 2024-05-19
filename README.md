@@ -4,7 +4,7 @@
 
 # Prerequisites
 
-* Git
+* Git (recommended)
 * GCC (or any C++ compiler)
 * CMake
 
@@ -29,7 +29,7 @@ sudo pacman -S git base-devel cmake
 * Create a build directory to build using CMake.
 
 * The commands for this are listed below.
-* Enter these commands one by one. (On Windows, use '\\' instead of '/' e.g. `cd lmc\`)
+* Enter these commands one by one.
 
 ```
 git clone https://github.com/LanzoMA/lmc.git
@@ -41,19 +41,16 @@ cmake ../
 
 # How to Use
 
-* You should see a 'main.txt' file in the 'lmc' folder.
-* This should contain example LMC code:
+* Inside `examples/` there are example programs to run:
 
-![Example LMC Code](example-code.png)
+![Example LMC Code](assests/example-code.png)
 
 * This is code for adding two numbers and outputting their total.
+* To run this program, run the lmc program with the file path to the code as the first argument. e.g.
 
-* To Test, place the main.txt file next to the executable (lmc)
-* Run the executable ./lmc (or .\lmc.exe on Windows)
-
-# Limitations
-
-* This emulator is NOT a good tool for explaining LMC and the basics of assembly.
+```
+./lmc examples/add_two_numbers.lmc
+```
 
 ## *Very Important*
 
@@ -63,6 +60,9 @@ cmake ../
 loop BRP end
 ```
 
+# Limitations
+
+* This emulator is NOT a good tool for explaining LMC and the basics of assembly.
 * No vizualizations of the registers.
 * Not currently able to change the 'clock speed' to slow down execution.
 * The accumulator, MDR, MAR and RAM locations can store numbers larger than 3 digits.
