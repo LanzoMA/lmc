@@ -1,0 +1,36 @@
+# Generates the fibonacci sequence
+# First two inputs are the are the two starting values for the sequence
+# The third input is the number of iterations outputted after
+# From https://www.vivaxsolutions.com/web/lmc.aspx
+
+INP
+STA x
+INP
+STA y
+INP
+STA lmt
+LDA x
+OUT
+LDA y
+OUT
+loop LDA lmt
+BRZ end
+SUB one
+STA lmt
+LDA x
+ADD y
+STA z
+OUT
+LDA y
+STA x
+LDA z
+STA y
+BRA loop
+end LDA z
+SUB z
+HLT
+x DAT
+y DAT
+z DAT
+lmt DAT
+one DAT 1
